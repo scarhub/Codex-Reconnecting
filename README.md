@@ -1,10 +1,12 @@
-# Codex & OpenClaw Proxy Installer for Windows
+# Codex-Reconnecting: Fix the 5/5 Reconnect Delay on Windows
 
 [简体中文](README.zh-CN.md) | **English**
 
-Beginner-friendly Windows migration packages for configuring a local HTTP proxy independently for Codex GUI and OpenClaw Gateway.
+Beginner-friendly Windows proxy setup for Codex GUI and OpenClaw → Codex calls. It addresses the repeated `Reconnecting 1/5` through `5/5` delay (Codex 五次重连 / five reconnects) when Codex does not inherit the local HTTP proxy correctly.
 
-> **Download the installers:** Both installer ZIP files are already available in the GitHub [Releases](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases) page. Download either or both: [Codex_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/Codex_Proxy_Migration.zip) · [OpenClaw_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/OpenClaw_Proxy_Migration.zip). The ZIP files are release assets, not files in the repository's source-code tree.
+**Search keywords:** Codex reconnecting 1/5 5/5, five reconnects, five retries, WebSocket reconnect, OpenClaw Codex delay, Codex proxy, 五次重连, Codex 重连, OpenClaw 调用 Codex 延迟。
+
+> **Download the installers:** Both installer ZIP files are available in the GitHub [Releases](https://github.com/scarhub/Codex-Reconnecting/releases) page. Download either or both: [Codex_Proxy_Migration.zip](https://github.com/scarhub/Codex-Reconnecting/releases/download/installer/Codex_Proxy_Migration.zip) · [OpenClaw_Proxy_Migration.zip](https://github.com/scarhub/Codex-Reconnecting/releases/download/installer/OpenClaw_Proxy_Migration.zip). The ZIP files are release assets, not files in the repository's source-code tree.
 
 ## What this project does
 
@@ -32,7 +34,7 @@ You can install either package or both. They do not depend on each other: stoppi
    - For the Codex package, install and sign in to Codex GUI.
    - For the OpenClaw package, install and sign in to OpenClaw first. Its gateway.cmd launcher must exist.
 3. Install your own proxy application, configure a local HTTP proxy listener, and start it before running an installer. The address is commonly 127.0.0.1 and the port depends on your proxy application; do not assume the example port is correct.
-4. Download the ZIP for the package you need from the [Releases page](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases) (the links are also listed at the top of this README). Extract it to a permanent folder, for example C:\Tools\Codex_OpenClaw_Proxy_Installer. Do not run an installer from inside a ZIP. Do not move or rename the extracted folder after installation: PATH entries or the scheduled-task action may refer to that location.
+4. Download the ZIP for the package you need from the [Releases page](https://github.com/scarhub/Codex-Reconnecting/releases) (the links are also listed at the top of this README). Extract it to a permanent folder, for example C:\Tools\Codex-Reconnecting. Do not run an installer from inside a ZIP. Do not move or rename the extracted folder after installation: PATH entries or the scheduled-task action may refer to that location.
 5. Do not copy another computer's generated config.ps1, install_state.json, Backup, or Logs into a new deployment. Those files contain machine-specific configuration, rollback state, or diagnostics.
 
 The proxy application, Codex, OpenClaw, and their sign-in credentials are not included. Sign in on each computer yourself; do not copy authentication directories or tokens from another computer.
@@ -134,7 +136,7 @@ The uninstaller attempts to restore the backed-up OpenClaw Gateway task action a
 
 ## Package contents and safe handling
 
-The current Release provides two ZIP assets: [Codex_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/Codex_Proxy_Migration.zip) and [OpenClaw_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/OpenClaw_Proxy_Migration.zip). Each contains its package folder, double-click installer and uninstaller, scripts, and example configuration. The installer generates machine-specific files such as config.ps1 and install_state.json; task backups and logs may also be generated during use.
+The current Release provides two ZIP assets: [Codex_Proxy_Migration.zip](https://github.com/scarhub/Codex-Reconnecting/releases/download/installer/Codex_Proxy_Migration.zip) and [OpenClaw_Proxy_Migration.zip](https://github.com/scarhub/Codex-Reconnecting/releases/download/installer/OpenClaw_Proxy_Migration.zip). Each contains its package folder, double-click installer and uninstaller, scripts, and example configuration. The installer generates machine-specific files such as config.ps1 and install_state.json; task backups and logs may also be generated during use.
 
 Do not publish or share generated config.ps1, install_state.json, task XML backups, or diagnostic logs unless you have reviewed and intentionally sanitized them. They are not substitutes for credentials, but can disclose local paths and machine configuration.
 
