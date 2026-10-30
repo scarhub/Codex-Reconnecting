@@ -4,16 +4,16 @@
 
 本项目提供两个相互独立的 Windows 迁移包，帮助 Codex GUI 和 OpenClaw Gateway 使用用户自己运行的本地 HTTP 代理，面向希望通过双击安装、按提示操作的 Windows 用户。
 
-> **安装包状态：** 编写本文档时，仓库默认分支尚未包含安装包目录，GitHub Releases 也没有发布安装压缩包。本文是使用说明，不是安装程序。在维护者上传两个迁移包或包含它们的 Release 压缩包前，仅克隆本仓库无法完成安装。
+> **下载安装包：** 两个安装包 ZIP 已发布在 GitHub [Releases](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases) 页面。可按需下载一个或两个：[Codex_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/Codex_Proxy_Migration.zip) · [OpenClaw_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/OpenClaw_Proxy_Migration.zip)。它们是 Release 附件，不在仓库源码文件列表中。
 
 ## 项目能做什么
 
 有些 Windows 应用不会自动使用代理软件或 Windows 中配置的本地代理。本项目提供两种独立方式，把本地 HTTP 代理地址交给相应程序：
 
-| 迁移包 | 适用对象 | 代理设置方式 |
+| 迁移包 | 解决的现象 | 实际作用 |
 |---|---|---|
-| **Codex Proxy Migration** | Codex GUI | 将 HTTP_PROXY、HTTPS_PROXY、NO_PROXY 写入当前 Windows 用户级环境变量。需要彻底重启 Codex GUI 才能继承变化。 |
-| **OpenClaw Proxy Migration** | OpenClaw Gateway 及其子进程（包括由 OpenClaw 启动的 Codex 进程） | 通过专用启动脚本，仅给 Gateway 进程及其子进程设置代理变量。 |
+| **Codex Proxy Migration** | Codex GUI 连接服务时可能连续显示 `Reconnecting 1/5` 到 `5/5`，之后才开始回答；常见原因是 Codex GUI 没有正确使用本机可用代理。 | 将 HTTP_PROXY、HTTPS_PROXY、NO_PROXY 写入当前 Windows 用户级环境变量，让 Codex GUI 使用本地 HTTP 代理。需要彻底重启 Codex GUI 才能继承变化。 |
+| **OpenClaw Proxy Migration** | OpenClaw 调用 Codex 模型时，Gateway 及其子进程未继承本地代理，也可能出现同样的五次重连等待，导致回复延迟增加。 | 通过专用启动脚本，仅给 Gateway 进程及其子进程（包括 Codex 进程）设置代理变量。 |
 
 可以只安装其中一个，也可以两个都安装。两者互不依赖：执行 Codex 的 proxy stop 不会取消 OpenClaw 专用启动脚本给 Gateway 设置的代理。
 
@@ -32,7 +32,7 @@
    - 使用 Codex 迁移包前，先安装并登录 Codex GUI。
    - 使用 OpenClaw 迁移包前，先安装并登录 OpenClaw，并确认存在 gateway.cmd。
 3. 自行安装代理软件，配置一个**本地 HTTP 代理监听端口**，并在运行安装程序前启动它。地址通常是 127.0.0.1，端口取决于代理软件；不要把示例端口当成实际端口。
-4. 有 Release 压缩包后，从仓库的 **Releases** 页面下载并解压到固定位置，例如 C:\Tools\Codex_OpenClaw_Proxy_Installer。不要在 ZIP 内直接运行安装程序；安装后也不要移动或重命名文件夹，因为用户 PATH 或计划任务操作可能引用该路径。
+4. 从仓库的 [Releases 页面](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases)下载需要的 ZIP（本 README 顶部也有直达链接），解压到固定位置，例如 C:\Tools\Codex_OpenClaw_Proxy_Installer。不要在 ZIP 内直接运行安装程序；安装后也不要移动或重命名文件夹，因为用户 PATH 或计划任务操作可能引用该路径。
 5. 不要把另一台电脑生成的 config.ps1、install_state.json、Backup 或 Logs 复制到新电脑。这些文件包含本机配置、回滚记录或诊断信息。
 
 迁移包不提供代理软件、Codex/OpenClaw 安装程序或登录凭据。每台电脑都应由用户自行登录，不要复制另一台电脑的认证目录或令牌。
@@ -126,14 +126,15 @@ proxy stop
 
 - **提示代理不可用：**启动代理软件，并核实本地 HTTP 代理主机和端口。除非代理软件明确提供 HTTP 代理，否则不要填写仅供 SOCKS 使用的端口。
 - **没有检测到代理：**输入代理软件显示的精确地址。常见端口会因软件和配置不同而变化。
-- **Codex GUI 运行后仍然重连：**检查 proxy status，彻底退出所有 Codex GUI/后台进程，再重新打开。迁移包无法修复无关的服务器、账户或网络故障。
+- **Codex GUI 仍连续重连：**检查 `proxy status`、确认代理软件正在运行，并彻底退出所有 Codex GUI/后台进程后重新打开。本包针对的是因代理未正确传递造成的五次重连等待，不能修复无关的服务端、账户、代理路由或网络故障。
+- **OpenClaw 调用 Codex 仍连续重连：**确认 Gateway 是通过本包启动脚本启动，且配置的代理可连接。本包针对 OpenClaw → Codex 调用链中的同类五次重连等待；其他服务或网络故障仍可能发生。
 - **OpenClaw 无法启动：**确认配置路径下存在 gateway.cmd、代理正在运行，且 **OpenClaw Gateway** 任务指向当前迁移包目录。查看 Logs\openclaw-gateway-proxy.log。
 - **端口变化后仍未生效：**按上文修改对应迁移包的 config.ps1。不要修改另一个迁移包；两套代理控制互相独立。
 - **卸载不能恢复计划任务：**保留 Backup 文件夹。回滚完成前不要删除迁移包。
 
 ## 安装包内容与安全
 
-正式发布的压缩包应包含两个文件夹：Codex_Proxy_Migration 和 OpenClaw_Proxy_Migration。每个包都包含双击安装/卸载入口、脚本和示例配置。安装程序会生成本机专用状态，例如 config.ps1、install_state.json；运行期间还可能生成任务 XML 备份和日志。
+当前 Release 已提供两个 ZIP 附件：[Codex_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/Codex_Proxy_Migration.zip) 和 [OpenClaw_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/OpenClaw_Proxy_Migration.zip)。每个压缩包都包含对应迁移包文件夹、双击安装/卸载入口、脚本和示例配置。安装程序会生成本机专用状态，例如 config.ps1、install_state.json；运行期间还可能生成任务 XML 备份和日志。
 
 未经检查和脱敏，不要公开分享生成的 config.ps1、install_state.json、计划任务 XML 备份或诊断日志。它们不是登录凭据，但可能暴露本机路径和配置信息。
 
