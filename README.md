@@ -4,16 +4,16 @@
 
 Beginner-friendly Windows migration packages for configuring a local HTTP proxy independently for Codex GUI and OpenClaw Gateway.
 
-> **Package availability:** At the time this README was prepared, the GitHub default branch contained no installer folders and the Releases page had no package archive. This README is documentation, not an installer. Do not expect to install by cloning this repository until the maintainer publishes the package folders or a Release archive containing them.
+> **Download the installers:** Both installer ZIP files are already available in the GitHub [Releases](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases) page. Download either or both: [Codex_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/Codex_Proxy_Migration.zip) · [OpenClaw_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/OpenClaw_Proxy_Migration.zip). The ZIP files are release assets, not files in the repository's source-code tree.
 
 ## What this project does
 
 Some Windows applications do not automatically use the local proxy configured in a proxy app or in Windows. This project provides two independent ways to pass a local HTTP proxy address to the relevant processes:
 
-| Package | Intended use | How proxy settings are applied |
+| Package | Problem it addresses | What it changes |
 |---|---|---|
-| **Codex Proxy Migration** | Codex GUI | Stores HTTP_PROXY, HTTPS_PROXY, and NO_PROXY as persistent current-user environment variables. Fully restart Codex GUI for it to inherit changes. |
-| **OpenClaw Proxy Migration** | OpenClaw Gateway and its child processes, including Codex processes started by OpenClaw | Starts Gateway through a wrapper that sets proxy variables only for that Gateway process tree. |
+| **Codex Proxy Migration** | Codex GUI may show `Reconnecting 1/5` through `5/5` before it starts answering when its connection to the Codex service is not using the available local proxy correctly. | Stores HTTP_PROXY, HTTPS_PROXY, and NO_PROXY as persistent current-user environment variables so Codex GUI can use the local HTTP proxy. Fully restart Codex GUI for it to inherit changes. |
+| **OpenClaw Proxy Migration** | Codex calls made by OpenClaw can suffer the same repeated five-reconnect delay when the Gateway and its child processes do not inherit the local proxy. | Starts Gateway through a wrapper that sets proxy variables only for that Gateway process tree, including Codex processes started by OpenClaw. |
 
 You can install either package or both. They do not depend on each other: stopping the Codex user-level proxy does not remove the proxy settings supplied to OpenClaw by its dedicated launcher.
 
@@ -32,7 +32,7 @@ You can install either package or both. They do not depend on each other: stoppi
    - For the Codex package, install and sign in to Codex GUI.
    - For the OpenClaw package, install and sign in to OpenClaw first. Its gateway.cmd launcher must exist.
 3. Install your own proxy application, configure a local HTTP proxy listener, and start it before running an installer. The address is commonly 127.0.0.1 and the port depends on your proxy application; do not assume the example port is correct.
-4. Once a Release archive is available, download it from the repository Releases page and extract it to a permanent folder, for example C:\Tools\Codex_OpenClaw_Proxy_Installer. Do not run an installer from inside a ZIP. Do not move or rename the extracted folder after installation: PATH entries or the scheduled-task action may refer to that location.
+4. Download the ZIP for the package you need from the [Releases page](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases) (the links are also listed at the top of this README). Extract it to a permanent folder, for example C:\Tools\Codex_OpenClaw_Proxy_Installer. Do not run an installer from inside a ZIP. Do not move or rename the extracted folder after installation: PATH entries or the scheduled-task action may refer to that location.
 5. Do not copy another computer's generated config.ps1, install_state.json, Backup, or Logs into a new deployment. Those files contain machine-specific configuration, rollback state, or diagnostics.
 
 The proxy application, Codex, OpenClaw, and their sign-in credentials are not included. Sign in on each computer yourself; do not copy authentication directories or tokens from another computer.
@@ -126,14 +126,15 @@ The uninstaller attempts to restore the backed-up OpenClaw Gateway task action a
 
 - **Proxy unavailable:** Start your proxy app and confirm its local HTTP host and port. Do not use a SOCKS-only port unless your application explicitly exposes it as an HTTP proxy.
 - **No proxy detected:** Enter the exact address shown by your proxy app. Common ports vary by application and configuration.
-- **Codex GUI still reconnects:** Check proxy status, fully exit every Codex GUI/background process, and reopen it. The package cannot fix unrelated server, account, or network failures.
+- **Codex GUI still shows repeated reconnects:** Check `proxy status`, confirm the proxy application is running, fully exit every Codex GUI/background process, and reopen it. This package addresses the repeated-reconnect delay caused by missing proxy inheritance; it cannot fix unrelated server, account, proxy-route, or network failures.
+- **OpenClaw's Codex calls still show repeated reconnects:** Confirm the Gateway was started through this package's launcher and that its configured proxy is reachable. The package targets the same five-reconnect delay in the OpenClaw → Codex call path; unrelated service or network failures can still occur.
 - **OpenClaw does not start:** Confirm gateway.cmd exists at the configured path, the proxy is running, and the OpenClaw Gateway task points to the current package folder. Review Logs\openclaw-gateway-proxy.log.
 - **Port change not picked up:** Update the relevant package's config.ps1 as described above. Do not change the other package; the two proxy controls are independent.
 - **Scheduled task rollback fails:** Keep the Backup folder intact. Do not delete the package before rollback completes.
 
 ## Package contents and safe handling
 
-A published Release should provide two folders: Codex_Proxy_Migration and OpenClaw_Proxy_Migration. Each includes a double-click installer and uninstaller, scripts, and an example configuration. The installer generates machine-specific files such as config.ps1 and install_state.json; task backups and logs may also be generated during use.
+The current Release provides two ZIP assets: [Codex_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/Codex_Proxy_Migration.zip) and [OpenClaw_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/OpenClaw_Proxy_Migration.zip). Each contains its package folder, double-click installer and uninstaller, scripts, and example configuration. The installer generates machine-specific files such as config.ps1 and install_state.json; task backups and logs may also be generated during use.
 
 Do not publish or share generated config.ps1, install_state.json, task XML backups, or diagnostic logs unless you have reviewed and intentionally sanitized them. They are not substitutes for credentials, but can disclose local paths and machine configuration.
 
