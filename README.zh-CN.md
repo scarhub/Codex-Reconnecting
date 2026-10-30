@@ -1,10 +1,12 @@
-# Windows Codex 与 OpenClaw 代理安装包
+# Codex-Reconnecting：Windows 下 Codex 五次重连修复
 
 **简体中文** | [English](README.md)
 
-本项目提供两个相互独立的 Windows 迁移包，帮助 Codex GUI 和 OpenClaw Gateway 使用用户自己运行的本地 HTTP 代理，面向希望通过双击安装、按提示操作的 Windows 用户。
+本项目提供两个相互独立的 Windows 代理配置包，帮助 Codex GUI 和 OpenClaw → Codex 调用链正确使用本地 HTTP 代理，解决 Codex 先显示 `Reconnecting 1/5` 到 `5/5`、等待后才开始回答的常见问题。
 
-> **下载安装包：** 两个安装包 ZIP 已发布在 GitHub [Releases](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases) 页面。可按需下载一个或两个：[Codex_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/Codex_Proxy_Migration.zip) · [OpenClaw_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/OpenClaw_Proxy_Migration.zip)。它们是 Release 附件，不在仓库源码文件列表中。
+**搜索关键词：** 五次重连、Codex 重连、Codex 5/5 reconnect、Reconnecting 1/5、five reconnects、WebSocket reconnect、OpenClaw 调用 Codex 延迟、Codex proxy。
+
+> **下载安装包：** 两个安装包 ZIP 已发布在 GitHub [Releases](https://github.com/scarhub/Codex-Reconnecting/releases) 页面。可按需下载一个或两个：[Codex_Proxy_Migration.zip](https://github.com/scarhub/Codex-Reconnecting/releases/download/installer/Codex_Proxy_Migration.zip) · [OpenClaw_Proxy_Migration.zip](https://github.com/scarhub/Codex-Reconnecting/releases/download/installer/OpenClaw_Proxy_Migration.zip)。它们是 Release 附件，不在仓库源码文件列表中。
 
 ## 项目能做什么
 
@@ -32,7 +34,7 @@
    - 使用 Codex 迁移包前，先安装并登录 Codex GUI。
    - 使用 OpenClaw 迁移包前，先安装并登录 OpenClaw，并确认存在 gateway.cmd。
 3. 自行安装代理软件，配置一个**本地 HTTP 代理监听端口**，并在运行安装程序前启动它。地址通常是 127.0.0.1，端口取决于代理软件；不要把示例端口当成实际端口。
-4. 从仓库的 [Releases 页面](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases)下载需要的 ZIP（本 README 顶部也有直达链接），解压到固定位置，例如 C:\Tools\Codex_OpenClaw_Proxy_Installer。不要在 ZIP 内直接运行安装程序；安装后也不要移动或重命名文件夹，因为用户 PATH 或计划任务操作可能引用该路径。
+4. 从仓库的 [Releases 页面](https://github.com/scarhub/Codex-Reconnecting/releases)下载需要的 ZIP（本 README 顶部也有直达链接），解压到固定位置，例如 C:\Tools\Codex-Reconnecting。不要在 ZIP 内直接运行安装程序；安装后也不要移动或重命名文件夹，因为用户 PATH 或计划任务操作可能引用该路径。
 5. 不要把另一台电脑生成的 config.ps1、install_state.json、Backup 或 Logs 复制到新电脑。这些文件包含本机配置、回滚记录或诊断信息。
 
 迁移包不提供代理软件、Codex/OpenClaw 安装程序或登录凭据。每台电脑都应由用户自行登录，不要复制另一台电脑的认证目录或令牌。
@@ -134,7 +136,7 @@ proxy stop
 
 ## 安装包内容与安全
 
-当前 Release 已提供两个 ZIP 附件：[Codex_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/Codex_Proxy_Migration.zip) 和 [OpenClaw_Proxy_Migration.zip](https://github.com/scarhub/Codex_OpenClaw_Proxy_Installer/releases/download/installer/OpenClaw_Proxy_Migration.zip)。每个压缩包都包含对应迁移包文件夹、双击安装/卸载入口、脚本和示例配置。安装程序会生成本机专用状态，例如 config.ps1、install_state.json；运行期间还可能生成任务 XML 备份和日志。
+当前 Release 已提供两个 ZIP 附件：[Codex_Proxy_Migration.zip](https://github.com/scarhub/Codex-Reconnecting/releases/download/installer/Codex_Proxy_Migration.zip) 和 [OpenClaw_Proxy_Migration.zip](https://github.com/scarhub/Codex-Reconnecting/releases/download/installer/OpenClaw_Proxy_Migration.zip)。每个压缩包都包含对应迁移包文件夹、双击安装/卸载入口、脚本和示例配置。安装程序会生成本机专用状态，例如 config.ps1、install_state.json；运行期间还可能生成任务 XML 备份和日志。
 
 未经检查和脱敏，不要公开分享生成的 config.ps1、install_state.json、计划任务 XML 备份或诊断日志。它们不是登录凭据，但可能暴露本机路径和配置信息。
 
